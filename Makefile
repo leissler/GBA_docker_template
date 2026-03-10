@@ -1,6 +1,9 @@
 # Declare phony targets
 .PHONY: help docker-build-base docker-build-dusk docker-build-butano compile-base compile-dusk compile-butano
 
+# Name of the current project folder (parent of ./source)
+PROJECT_NAME := $(notdir $(CURDIR))
+
 # Default target is 'help'
 default: help
 
@@ -28,3 +31,4 @@ compile-dusk: ## Compile game in ./source with CMD on dusk docker image
 
 compile-butano: ## Compile game in ./source with CMD on butano docker image
 	docker run -it --rm -v ./source:/source dkarm_butano:local -l -c "$(CMD)"
+	@if [ -f ./source/source.gba ]; then mv ./source/source.gba ./$(PROJECT_NAME).gba; echo "Created ./$(PROJECT_NAME).gba"; fi
