@@ -8,12 +8,14 @@ RUN apt update && apt install -y \
     make build-essential wget curl git \
     && apt autoremove -y && apt clean && rm -rf /var/lib/apt/lists/*
 
-# install devkitpro pacman
-RUN wget https://apt.devkitpro.org/install-devkitpro-pacman \
-    && chmod +x ./install-devkitpro-pacman \
-    && sed -i 's/apt-get install/apt-get -y install/g' ./install-devkitpro-pacman \
-    && ./install-devkitpro-pacman \
-    && rm ./install-devkitpro-pacman
+RUN ln -s /proc/mounts /etc/mtab \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends apt-transport-https ca-certificates wget \
+    && mkdir -p /usr/share/keyrings \
+    && wget -U "dkp apt" -O /usr/share/keyrings/devkitpro-pub.gpg https://apt.devkitpro.org/devkitpro-pub.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/devkitpro-pub.gpg] https://apt.devkitpro.org stable main" > /etc/apt/sources.list.d/devkitpro.list \
+    && apt-get update \
+    && apt-get install -y devkitpro-pacman
 
 # Fix the missing /etc/mtab, ignore errors (for example: when already existing)
 RUN ln -s /proc/mounts /etc/mtab; exit 0
