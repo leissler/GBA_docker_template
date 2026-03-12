@@ -79,6 +79,36 @@ You can force a runtime explicitly:
 make CONTAINER_RUNTIME=podman compile-base CMD="make"
 ```
 
+## Debugging with mGBA (Host + Dev Container)
+
+This repo includes VS Code tasks and launch configuration for GDB attach debugging:
+
+- Build task: `Build ROM (debug)` (`.vscode/tasks.json`)
+- Debug config: `Attach to mGBA GDB stub (host:2345)` (`.vscode/launch.json`)
+
+Workflow:
+
+1. Open the repo in the dev container.
+2. Start mGBA on your host machine with its GDB stub enabled and the generated ROM:
+
+```sh
+mgba -g /absolute/path/to/GBA_docker_template/source/source.gba
+```
+
+On macOS app bundle installs, you can usually use:
+
+```sh
+/Applications/mGBA.app/Contents/MacOS/mGBA -g /absolute/path/to/GBA_docker_template/source/source.gba
+```
+
+3. In VS Code (inside the container), run the debug configuration:
+   `Attach to mGBA GDB stub (host:2345)`.
+
+Notes:
+
+- The debugger connects to `host.docker.internal:2345` from the container.
+- Symbols are loaded from `source/source.elf`.
+
 ## Notes
 
 - This template is based on `dkarm_gba_docker` and adapted for `GBA_docker_template` usage.

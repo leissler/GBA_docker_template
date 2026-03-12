@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build ROM (debug)",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "make -C source -j4 USERFLAGS='-Og -g3' USERCXXFLAGS='-Og -g3'"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Build ROM (release)",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "make -C source -j4"
+      ],
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "mGBA host launch hint",
+      "type": "shell",
+      "command": "echo",
+      "args": [
+        "Start mGBA on your host with GDB stub: mgba -g <absolute-path-to-repo>/source/source.gba"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
