@@ -1,1 +1,10 @@
 .DS_Store
+.docker-stamps/
+
+# Build/runtime artifacts
+*.gba
+*.sav
+source/*.elf
+source/*.gba
+source/build/
+source/.DS_Store
