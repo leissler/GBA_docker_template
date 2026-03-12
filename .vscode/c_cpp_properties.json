@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Butano (Dev Container)",
+      "compilerPath": "/opt/devkitpro/devkitARM/bin/arm-none-eabi-g++",
+      "intelliSenseMode": "linux-gcc-arm",
+      "cppStandard": "c++17",
+      "includePath": [
+        "${workspaceFolder}/source/include",
+        "${workspaceFolder}/source/src",
+        "${env:LIBBUTANOABS}/include",
+        "${env:LIBBUTANOABS}/hw/include"
+      ]
+    }
+  ],
+  "version": 4
+}

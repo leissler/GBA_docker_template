@@ -1,0 +1,30 @@
+{
+  "name": "GBA Butano Dev",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "containerEnv": {
+    "LIBBUTANOABS": "/butano_src/butano"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.makefile-tools"
+      ],
+      "settings": {
+        "C_Cpp.default.compilerPath": "/opt/devkitpro/devkitARM/bin/arm-none-eabi-g++",
+        "C_Cpp.default.intelliSenseMode": "linux-gcc-arm",
+        "C_Cpp.default.cppStandard": "c++17",
+        "C_Cpp.default.includePath": [
+          "${workspaceFolder}/source/include",
+          "${workspaceFolder}/source/src",
+          "${env:LIBBUTANOABS}/include",
+          "${env:LIBBUTANOABS}/hw/include"
+        ]
+      }
+    }
+  }
+}
