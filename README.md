@@ -104,6 +104,12 @@ Notes:
 bash scripts/start_mgba_bridge.sh
 ```
 
+- If it still fails, check bridge logs on host:
+
+```sh
+cat /tmp/mgba-host-bridge.log
+```
+
 - Default mGBA binary path is `/Applications/mGBA.app/Contents/MacOS/mGBA`.
   Override with host env var `MGBA_BIN` if needed.
 - The debugger connects to `host.docker.internal:2345` from the container.

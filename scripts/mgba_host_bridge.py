@@ -15,7 +15,7 @@ from typing import Optional
 
 
 class BridgeState:
-    def __init__(self, mgba_bin: str, workspace_root: Path):
+    def __init__(self, mgba_bin: Optional[str], workspace_root: Path):
         self.mgba_bin = mgba_bin
         self.workspace_root = workspace_root
         self.process: Optional[subprocess.Popen] = None
@@ -29,6 +29,8 @@ class BridgeState:
             if not rom_path.is_file():
                 raise FileNotFoundError(f"ROM not found: {rom}")
 
+            mgba_bin = self.mgba_bin or resolve_mgba_bin(None)
+
             if self.process is not None and self.process.poll() is None:
                 self.process.terminate()
                 try:
@@ -37,7 +39,7 @@ class BridgeState:
                     self.process.kill()
                     self.process.wait(timeout=2)
 
-            cmd = [self.mgba_bin, "-g", str(rom_path)]
+            cmd = [mgba_bin, "-g", str(rom_path)]
             self.process = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             return {"ok": True, "pid": self.process.pid, "cmd": cmd}
 
@@ -120,7 +122,12 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    mgba_bin = resolve_mgba_bin(args.mgba_bin)
+    try:
+        mgba_bin = resolve_mgba_bin(args.mgba_bin)
+    except FileNotFoundError as exc:
+        # Keep the bridge alive so health checks pass; launch will return a clear error.
+        print(f"Warning: {exc}")
+        mgba_bin = None
     workspace_root = Path(args.workspace_root).resolve()
     state = BridgeState(mgba_bin, workspace_root)
     server = ThreadingHTTPServer((args.host, args.port), make_handler(state))

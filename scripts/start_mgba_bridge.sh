@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BRIDGE_SCRIPT="${SCRIPT_DIR}/mgba_host_bridge.py"
 WORKSPACE_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 PORT="${MGBA_BRIDGE_PORT:-17777}"
+BRIDGE_BIND="${MGBA_BRIDGE_BIND:-0.0.0.0}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 LOG_FILE="${TMPDIR:-/tmp}/mgba-host-bridge.log"
 
@@ -22,7 +23,7 @@ if curl -fsS "http://127.0.0.1:${PORT}/health" >/dev/null 2>&1; then
   exit 0
 fi
 
-"${PYTHON_BIN}" "${BRIDGE_SCRIPT}" --host 127.0.0.1 --port "${PORT}" --workspace-root "${WORKSPACE_ROOT}" >"${LOG_FILE}" 2>&1 &
+"${PYTHON_BIN}" "${BRIDGE_SCRIPT}" --host "${BRIDGE_BIND}" --port "${PORT}" --workspace-root "${WORKSPACE_ROOT}" >"${LOG_FILE}" 2>&1 &
 
 for _ in $(seq 1 20); do
   if curl -fsS "http://127.0.0.1:${PORT}/health" >/dev/null 2>&1; then
