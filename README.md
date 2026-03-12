@@ -81,31 +81,31 @@ make CONTAINER_RUNTIME=podman compile-base CMD="make"
 
 ## Debugging with mGBA (Host + Dev Container)
 
-This repo includes VS Code tasks and launch configuration for GDB attach debugging:
+This repo includes VS Code tasks and launch configuration for GDB attach debugging with host mGBA auto-launch:
 
 - Build task: `Build ROM (debug)` (`.vscode/tasks.json`)
+- Host launcher task: `Launch mGBA on host (bridge)` (`.vscode/tasks.json`)
 - Debug config: `Attach to mGBA GDB stub (host:2345)` (`.vscode/launch.json`)
+- Host bridge script: `scripts/mgba_host_bridge.py`
 
 Workflow:
 
 1. Open the repo in the dev container.
-2. Start mGBA on your host machine with its GDB stub enabled and the generated ROM:
-
-```sh
-mgba -g /absolute/path/to/GBA_docker_template/source/source.gba
-```
-
-On macOS app bundle installs, you can usually use:
-
-```sh
-/Applications/mGBA.app/Contents/MacOS/mGBA -g /absolute/path/to/GBA_docker_template/source/source.gba
-```
-
-3. In VS Code (inside the container), run the debug configuration:
+2. Press `F5` and run the debug configuration:
    `Attach to mGBA GDB stub (host:2345)`.
 
 Notes:
 
+- The devcontainer `initializeCommand` attempts to auto-start the host bridge on macOS:
+  `scripts/start_mgba_bridge.sh`.
+- If auto-start fails, run this once on the host:
+
+```sh
+bash scripts/start_mgba_bridge.sh
+```
+
+- Default mGBA binary path is `/Applications/mGBA.app/Contents/MacOS/mGBA`.
+  Override with host env var `MGBA_BIN` if needed.
 - The debugger connects to `host.docker.internal:2345` from the container.
 - Symbols are loaded from `source/source.elf`.
 

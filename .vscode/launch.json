@@ -13,7 +13,7 @@
       "targetArchitecture": "arm",
       "stopAtEntry": true,
       "externalConsole": false,
-      "preLaunchTask": "Build ROM (debug)",
+      "preLaunchTask": "Prepare Debug Session (build + launch host mGBA)",
       "setupCommands": [
         {
           "description": "Enable GDB pretty printing",

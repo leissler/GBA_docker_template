@@ -30,11 +30,21 @@
       ]
     },
     {
-      "label": "mGBA host launch hint",
+      "label": "Launch mGBA on host (bridge)",
       "type": "shell",
-      "command": "echo",
+      "command": "bash",
       "args": [
-        "Start mGBA on your host with GDB stub: mgba -g <absolute-path-to-repo>/source/source.gba"
+        "-lc",
+        "bash scripts/launch_mgba_via_bridge.sh"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Prepare Debug Session (build + launch host mGBA)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Build ROM (debug)",
+        "Launch mGBA on host (bridge)"
       ],
       "problemMatcher": []
     }

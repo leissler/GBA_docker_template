@@ -1,5 +1,6 @@
 {
   "name": "GBA Butano Dev",
+  "initializeCommand": "bash \"${localWorkspaceFolder}/scripts/start_mgba_bridge.sh\"",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."
@@ -7,7 +8,8 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "containerEnv": {
-    "LIBBUTANOABS": "/butano_src/butano"
+    "LIBBUTANOABS": "/butano_src/butano",
+    "MGBA_BRIDGE_PORT": "17777"
   },
   "customizations": {
     "vscode": {

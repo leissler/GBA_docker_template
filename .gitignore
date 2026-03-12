@@ -9,3 +9,5 @@ source/*.gba
 source/build/
 source/.DS_Store
 compile_commands.json
+__pycache__/
+*.pyc
