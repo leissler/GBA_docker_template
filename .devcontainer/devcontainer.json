@@ -1,6 +1,6 @@
 {
   "name": "GBA Butano Dev",
-  "initializeCommand": "bash \"${localWorkspaceFolder}/scripts/start_mgba_bridge.sh\"",
+  "initializeCommand": "bash scripts/start_mgba_bridge.sh",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."

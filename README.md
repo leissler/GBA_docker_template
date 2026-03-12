@@ -104,6 +104,8 @@ Notes:
 bash scripts/start_mgba_bridge.sh
 ```
 
+- Auto-start attempts are logged here:
+  `.devcontainer/mgba-bridge-init.log`
 - If it still fails, check bridge logs on host:
 
 ```sh
