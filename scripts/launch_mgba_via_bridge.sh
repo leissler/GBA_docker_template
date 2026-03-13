@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PORT="${MGBA_BRIDGE_PORT:-17777}"
+PORT="${GBA_BRIDGE_PORT:-${MGBA_BRIDGE_PORT:-17777}}"
+BRIDGE_HOST_OVERRIDE="${GBA_BRIDGE_HOST:-${MGBA_BRIDGE_HOST:-}}"
 ROM_PATH="source/source.gba"
-MGBA_DEBUG="${MGBA_DEBUG:-1}"
+DEBUG_FLAG="${GBA_DEBUG:-${MGBA_DEBUG:-1}}"
+EMULATOR_OVERRIDE="${GBA_EMULATOR:-}"
+EMULATOR_BIN_OVERRIDE="${GBA_EMULATOR_BIN:-${MGBA_BIN:-}}"
 BRIDGE_HOST=""
 BRIDGE_HOST_CANDIDATES=()
 
-if [[ -n "${MGBA_BRIDGE_HOST:-}" ]]; then
-  BRIDGE_HOST_CANDIDATES+=("${MGBA_BRIDGE_HOST}")
+if [[ -n "${BRIDGE_HOST_OVERRIDE}" ]]; then
+  BRIDGE_HOST_CANDIDATES+=("${BRIDGE_HOST_OVERRIDE}")
 fi
 
 BRIDGE_HOST_CANDIDATES+=(
@@ -52,18 +55,38 @@ for candidate in "${BRIDGE_HOST_CANDIDATES[@]}"; do
 done
 
 if [[ -z "${BRIDGE_HOST}" ]]; then
-  echo "mGBA host bridge is not reachable on port ${PORT}."
+  echo "Host emulator bridge is not reachable on port ${PORT}."
   echo "Checked hosts: ${BRIDGE_HOST_CANDIDATES[*]}"
   echo "Run on host: bash scripts/start_mgba_bridge.sh"
   exit 1
 fi
 
-PAYLOAD="$(ROM_PATH="${ROM_PATH}" MGBA_DEBUG="${MGBA_DEBUG}" python3 - <<'PY'
+PAYLOAD="$(
+  ROM_PATH="${ROM_PATH}" \
+  DEBUG_FLAG="${DEBUG_FLAG}" \
+  EMULATOR_OVERRIDE="${EMULATOR_OVERRIDE}" \
+  EMULATOR_BIN_OVERRIDE="${EMULATOR_BIN_OVERRIDE}" \
+  python3 - <<'PY'
 import json
 import os
-debug_value = os.environ.get("MGBA_DEBUG", "1").strip().lower()
-debug_enabled = debug_value not in ("0", "false", "no")
-print(json.dumps({"rom": os.environ["ROM_PATH"], "debug": debug_enabled}))
+
+debug_value = os.environ.get("DEBUG_FLAG", "1").strip().lower()
+debug_enabled = debug_value not in ("0", "false", "no", "off")
+
+payload = {
+    "rom": os.environ["ROM_PATH"],
+    "debug": debug_enabled,
+}
+
+emulator_override = os.environ.get("EMULATOR_OVERRIDE", "").strip()
+emulator_bin_override = os.environ.get("EMULATOR_BIN_OVERRIDE", "").strip()
+
+if emulator_override:
+    payload["emulator"] = emulator_override
+if emulator_bin_override:
+    payload["emulator_bin"] = emulator_bin_override
+
+print(json.dumps(payload))
 PY
 )"
 
@@ -73,7 +96,7 @@ HTTP_CODE="$(curl -sS -o "${TMP_RESPONSE}" -w "%{http_code}" -X POST "http://${B
   -d "${PAYLOAD}")"
 
 if [[ "${HTTP_CODE}" != "200" ]]; then
-  echo "mGBA bridge launch failed (HTTP ${HTTP_CODE}):"
+  echo "Host emulator bridge launch failed (HTTP ${HTTP_CODE}):"
   cat "${TMP_RESPONSE}"
   rm -f "${TMP_RESPONSE}"
   exit 1
@@ -81,4 +104,4 @@ fi
 
 rm -f "${TMP_RESPONSE}"
 
-echo "Requested host mGBA launch for ${ROM_PATH}"
+echo "Requested host emulator launch for ${ROM_PATH}"

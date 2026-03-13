@@ -102,7 +102,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Launch mGBA on host (bridge)",
+      "label": "Launch host emulator (bridge)",
       "type": "shell",
       "command": "bash",
       "args": [
@@ -112,11 +112,11 @@
       "problemMatcher": []
     },
     {
-      "label": "Prepare Debug Session (build + launch host mGBA)",
+      "label": "Prepare Debug Session (build + launch host emulator)",
       "dependsOrder": "sequence",
       "dependsOn": [
         "Build ROM (debug)",
-        "Launch mGBA on host (bridge)"
+        "Launch host emulator (bridge)"
       ],
       "problemMatcher": []
     }

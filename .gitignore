@@ -13,3 +13,4 @@ compile_commands.json
 __pycache__/
 *.pyc
 .devcontainer/mgba-bridge-init.log
+.emulator-bridge.env

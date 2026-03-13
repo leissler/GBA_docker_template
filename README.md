@@ -64,10 +64,34 @@ Use `Tasks: Run Task`:
 Press `F5` and choose:
 - `Attach to mGBA GDB stub (host:2345)`
 
+### 5. Choose host emulator (optional)
+
+Default emulator is `mGBA` (auto-discovered).
+
+To configure explicitly, copy `.emulator-bridge.env.example` to `.emulator-bridge.env`
+and set `GBA_EMULATOR` / `GBA_EMULATOR_BIN`.
+
+Examples:
+- macOS mGBA: `GBA_EMULATOR_BIN=/Applications/mGBA.app/Contents/MacOS/mGBA`
+- WSL2 + Windows mGBA install: `GBA_EMULATOR_BIN=/mnt/c/Program Files/mGBA/mGBA.exe`
+- VisualBoyAdvance-M: set `GBA_EMULATOR=visualboyadvance-m`
+
+Notes:
+- `Run ROM on host emulator (no debugger)` works with supported emulators.
+- GDB attach debugging (`F5`) requires `mGBA`.
+
 If host bridge is not reachable, run on host:
 
 ```sh
 bash scripts/start_mgba_bridge.sh
+```
+
+When opening/reopening the Dev Container, the bridge is restarted automatically.
+
+Windows PowerShell fallback:
+
+```powershell
+py -3 scripts/mgba_host_bridge.py --host 0.0.0.0 --port 17777 --workspace-root .
 ```
 
 Bridge log (host):
@@ -79,5 +103,6 @@ cat /tmp/mgba-host-bridge.log
 ## Notes
 
 - Docker Desktop auto-start is supported on macOS and on WSL2 Ubuntu.
+- Host emulator auto-discovery supports macOS, Linux, Windows, and WSL2 paths.
 - Build directories are separated to avoid stale dependency conflicts:
   `build_dev_*` for devcontainer tasks, `build_host_*` for host-via-Docker tasks.
