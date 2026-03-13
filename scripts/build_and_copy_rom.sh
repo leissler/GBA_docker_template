@@ -3,6 +3,23 @@ set -euo pipefail
 
 MODE="${1:-release}"
 JOBS="${BUILD_JOBS:-4}"
+BUILD_DIR="build_dev_release"
+MAKE_EXTRA_FLAGS=()
+
+case "${MODE}" in
+  debug)
+    BUILD_DIR="build_dev_debug"
+    MAKE_EXTRA_FLAGS+=(USERFLAGS='-Og -g3' USERCXXFLAGS='-Og -g3')
+    ;;
+  release)
+    BUILD_DIR="build_dev_release"
+    ;;
+  *)
+    echo "Unknown build mode: ${MODE}"
+    echo "Expected: debug | release"
+    exit 1
+    ;;
+esac
 
 resolve_project_name() {
   local name="${PROJECT_NAME:-}"
@@ -24,7 +41,7 @@ resolve_project_name() {
 }
 
 has_stale_deps() {
-  if ! ls source/build/*.d >/dev/null 2>&1; then
+  if ! ls "source/${BUILD_DIR}"/*.d >/dev/null 2>&1; then
     return 1
   fi
 
@@ -34,7 +51,7 @@ has_stale_deps() {
       return 0
     fi
   done < <(
-    awk '{for(i=1;i<=NF;i++){t=$i; gsub(/\\$/, "", t); gsub(/:$/, "", t); if(t ~ /^\//) print t}}' source/build/*.d 2>/dev/null | sort -u
+    awk '{for(i=1;i<=NF;i++){t=$i; gsub(/\\$/, "", t); gsub(/:$/, "", t); if(t ~ /^\//) print t}}' "source/${BUILD_DIR}"/*.d 2>/dev/null | sort -u
   )
 
   return 1
@@ -42,14 +59,10 @@ has_stale_deps() {
 
 if has_stale_deps; then
   echo "Detected stale dependency paths; running clean..."
-  make -C source clean
+  make -C source "BUILD=${BUILD_DIR}" clean
 fi
 
-if [[ "${MODE}" == "debug" ]]; then
-  make -C source -j"${JOBS}" USERFLAGS='-Og -g3' USERCXXFLAGS='-Og -g3'
-else
-  make -C source -j"${JOBS}"
-fi
+make -C source -j"${JOBS}" "BUILD=${BUILD_DIR}" "${MAKE_EXTRA_FLAGS[@]}"
 
 if [[ ! -f source/source.gba ]]; then
   echo "Build succeeded but source/source.gba was not found."

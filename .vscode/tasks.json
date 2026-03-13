@@ -37,7 +37,7 @@
       "command": "bash",
       "args": [
         "-lc",
-        "make compile-butano CMD='make -j4'"
+        "make AUTO_CLEAN_MAKE=0 compile-butano CMD='make -j4 BUILD=build_host_release'"
       ],
       "group": {
         "kind": "build"
@@ -52,7 +52,7 @@
       "command": "bash",
       "args": [
         "-lc",
-        "make compile-butano CMD='make -j4 USERFLAGS=\"-Og -g3\" USERCXXFLAGS=\"-Og -g3\"'"
+        "make AUTO_CLEAN_MAKE=0 compile-butano CMD='make -j4 BUILD=build_host_debug USERFLAGS=\"-Og -g3\" USERCXXFLAGS=\"-Og -g3\"'"
       ],
       "group": {
         "kind": "build"

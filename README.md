@@ -104,6 +104,9 @@ Workflow:
 
 Notes:
 
+- VS Code devcontainer tasks use separate build dirs (`build_dev_debug`, `build_dev_release`).
+- VS Code host-via-Docker tasks use separate build dirs (`build_host_debug`, `build_host_release`).
+- This separation avoids stale path conflicts when switching between host Docker builds and devcontainer builds.
 - The devcontainer `initializeCommand` attempts to auto-start the host bridge on macOS:
   `scripts/start_mgba_bridge.sh`.
 - If auto-start fails, run this once on the host:
