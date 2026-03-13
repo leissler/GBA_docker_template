@@ -24,6 +24,9 @@
         "-lc",
         "bash scripts/build_and_copy_rom.sh release"
       ],
+      "group": {
+        "kind": "build"
+      },
       "problemMatcher": [
         "$gcc"
       ]
