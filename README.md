@@ -25,23 +25,15 @@ Run all commands from the repository root.
 ### 2. Build ROM (release)
 
 ```sh
-make AUTO_CLEAN_MAKE=0 compile-butano "CMD=make -j4 BUILD=build_host_release"
+make compile-butano CMD=make
 ```
-
-`make docker-build-butano` is optional. `compile-butano` already builds the image automatically when needed.
 
 ### 3. ROM output
 
 - Main build output: `source/source.gba`
 - Convenience copy in repo root: `./<repo-folder-name>.gba`
 
-### 4. Optional debug build
-
-```sh
-make AUTO_CLEAN_MAKE=0 compile-butano "CMD=make -j4 BUILD=build_host_debug USERFLAGS='-Og -g3' USERCXXFLAGS='-Og -g3'"
-```
-
-### 5. Clean all generated files
+### 4. Clean all generated files
 
 ```sh
 bash scripts/clean_all_outputs.sh host-docker
