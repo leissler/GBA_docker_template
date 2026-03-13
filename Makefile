@@ -19,6 +19,7 @@ CONTAINER_RUNTIME ?= $(shell \
 	elif command -v podman >/dev/null 2>&1; then echo podman; \
 	fi)
 DOCKER_START_TIMEOUT ?= 60
+AUTO_CLEAN_MAKE ?= 1
 
 BASE_STAMP := $(STAMP_DIR)/base.stamp
 DUSK_STAMP := $(STAMP_DIR)/dusk.stamp
@@ -123,21 +124,39 @@ compile-base: check-container-runtime $(BASE_STAMP) ## Compile game in ./source 
 		rm -f $(BASE_STAMP); \
 		$(MAKE) $(BASE_STAMP); \
 	fi
-	$(CONTAINER_RUNTIME) run -it --rm -v "$(SOURCE_DIR):/source" $(BASE_IMAGE) -l -c "$(CMD)"
+	@RUN_CMD='$(CMD)'; \
+	if [ "$(AUTO_CLEAN_MAKE)" = "1" ]; then \
+		case "$$RUN_CMD" in \
+			make*) RUN_CMD="make clean && $$RUN_CMD" ;; \
+		esac; \
+	fi; \
+	$(CONTAINER_RUNTIME) run -it --rm -v "$(SOURCE_DIR):/source" $(BASE_IMAGE) -l -c "$$RUN_CMD"
 
 compile-dusk: check-container-runtime $(DUSK_STAMP) ## Compile game in ./source with CMD on dusk docker image
 	@if ! $(CONTAINER_RUNTIME) image inspect $(DUSK_IMAGE) > /dev/null 2>&1; then \
 		rm -f $(DUSK_STAMP); \
 		$(MAKE) $(DUSK_STAMP); \
 	fi
-	$(CONTAINER_RUNTIME) run -it --rm -v "$(SOURCE_DIR):/source" $(DUSK_IMAGE) -l -c "$(CMD)"
+	@RUN_CMD='$(CMD)'; \
+	if [ "$(AUTO_CLEAN_MAKE)" = "1" ]; then \
+		case "$$RUN_CMD" in \
+			make*) RUN_CMD="make clean && $$RUN_CMD" ;; \
+		esac; \
+	fi; \
+	$(CONTAINER_RUNTIME) run -it --rm -v "$(SOURCE_DIR):/source" $(DUSK_IMAGE) -l -c "$$RUN_CMD"
 
 compile-butano: check-container-runtime $(BUTANO_STAMP) ## Compile game in ./source with CMD on butano docker image
 	@if ! $(CONTAINER_RUNTIME) image inspect $(BUTANO_IMAGE) > /dev/null 2>&1; then \
 		rm -f $(BUTANO_STAMP); \
 		$(MAKE) $(BUTANO_STAMP); \
 	fi
-	$(CONTAINER_RUNTIME) run -it --rm -v "$(SOURCE_DIR):/source" $(BUTANO_IMAGE) -l -c "$(CMD)"
+	@RUN_CMD='$(CMD)'; \
+	if [ "$(AUTO_CLEAN_MAKE)" = "1" ]; then \
+		case "$$RUN_CMD" in \
+			make*) RUN_CMD="make clean && $$RUN_CMD" ;; \
+		esac; \
+	fi; \
+	$(CONTAINER_RUNTIME) run -it --rm -v "$(SOURCE_DIR):/source" $(BUTANO_IMAGE) -l -c "$$RUN_CMD"
 	@if [ -f "$(SOURCE_DIR)/source.gba" ]; then \
 		cp "$(SOURCE_DIR)/source.gba" "./$(PROJECT_NAME).gba"; \
 		echo "Created ./$(PROJECT_NAME).gba"; \
