@@ -9,6 +9,7 @@
   "workspaceFolder": "/source",
   "containerEnv": {
     "LIBBUTANOABS": "/butano_src/butano",
+    "PROJECT_NAME": "${localWorkspaceFolderBasename}",
     "MGBA_BRIDGE_PORT": "17777"
   },
   "customizations": {
