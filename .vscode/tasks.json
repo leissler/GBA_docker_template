@@ -64,6 +64,44 @@
       ]
     },
     {
+      "label": "Clean All Outputs (devcontainer/local)",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "bash scripts/clean_all_outputs.sh local"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean All Outputs (host via Docker)",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "bash scripts/clean_all_outputs.sh host-docker"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean Docker Stamps",
+      "type": "process",
+      "command": "make",
+      "args": [
+        "clean-docker-stamps"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean Everything (host via Docker + stamps)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Clean All Outputs (host via Docker)",
+        "Clean Docker Stamps"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Launch mGBA on host (bridge)",
       "type": "shell",
       "command": "bash",
