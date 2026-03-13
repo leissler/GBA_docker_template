@@ -14,6 +14,27 @@ Two ways to use this repo:
 
 Run all commands from the repository root.
 
+## Windows 11 Setup (WSL2 + Docker Desktop)
+
+1. Install WSL2 (PowerShell as Administrator):
+
+```powershell
+wsl --install
+wsl --set-default-version 2
+```
+
+2. Install Docker Desktop for Windows.
+3. In Docker Desktop:
+   - `Settings > General`: enable `Use the WSL 2 based engine`
+   - `Settings > Resources > WSL Integration`: enable your Ubuntu distro
+4. Verify your distro is WSL2:
+
+```powershell
+wsl -l -v
+```
+
+5. Start Docker Desktop before opening this repo in VS Code.
+
 ## Path A: Build and Test Without VS Code
 
 ### 1. Edit project files
@@ -89,10 +110,10 @@ bash scripts/start_mgba_bridge.sh
 
 When opening/reopening the Dev Container, the bridge is restarted automatically.
 
-Windows PowerShell fallback:
+Windows PowerShell fallback (native Windows VS Code sessions):
 
 ```powershell
-py -3 scripts/mgba_host_bridge.py --host 0.0.0.0 --port 17777 --workspace-root .
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_mgba_bridge.ps1
 ```
 
 Bridge log (host):

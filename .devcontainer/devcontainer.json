@@ -1,6 +1,6 @@
 {
   "name": "GBA Butano Dev",
-  "initializeCommand": "bash scripts/start_mgba_bridge.sh",
+  "initializeCommand": "bash scripts/start_mgba_bridge.sh || powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_mgba_bridge.ps1",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."
