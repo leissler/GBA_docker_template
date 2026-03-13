@@ -81,10 +81,15 @@ Use `Tasks: Run Task`:
 - `Clean Outputs`
 - `Clean Everything (including Docker stamps)`
 
-### 4. Debug on host mGBA
+### 4. Run or Debug on host emulator
 
-Press `F5` and choose:
-- `Attach to mGBA GDB stub (host:2345)`
+In VS Code:
+- `Run -> Start Debugging` (or `F5`) to debug
+- `Run -> Run Without Debugging` to just run
+
+Launch configs used:
+- `Attach to mGBA GDB stub (host:2345)` for debugging
+- `Run ROM on host emulator (no debugger)` for run-only
 
 ### 5. Choose host emulator (optional)
 
