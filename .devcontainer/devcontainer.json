@@ -5,6 +5,10 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
+  "runArgs": [
+    "--add-host=host.docker.internal:host-gateway",
+    "--add-host=gateway.docker.internal:host-gateway"
+  ],
   "workspaceMount": "source=${localWorkspaceFolder},target=/source,type=bind,consistency=cached",
   "workspaceFolder": "/source",
   "containerEnv": {

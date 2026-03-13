@@ -11,7 +11,7 @@
       "miDebuggerPath": "/opt/devkitpro/devkitARM/bin/arm-none-eabi-gdb",
       "miDebuggerServerAddress": "host.docker.internal:2345",
       "targetArchitecture": "arm",
-      "stopAtEntry": true,
+      "stopAtEntry": false,
       "externalConsole": false,
       "preLaunchTask": "Prepare Debug Session (build + launch host mGBA)",
       "setupCommands": [
@@ -21,6 +21,12 @@
           "ignoreFailures": true
         }
       ]
+    },
+    {
+      "name": "Run ROM on host mGBA (no debugger)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bash -lc 'bash scripts/build_and_copy_rom.sh release && MGBA_DEBUG=0 bash scripts/launch_mgba_via_bridge.sh'"
     }
   ]
 }

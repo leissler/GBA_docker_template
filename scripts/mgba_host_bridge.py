@@ -21,7 +21,7 @@ class BridgeState:
         self.process: Optional[subprocess.Popen] = None
         self.lock = threading.Lock()
 
-    def launch(self, rom: str) -> dict:
+    def launch(self, rom: str, debug: bool = True) -> dict:
         with self.lock:
             rom_path = Path(rom)
             if not rom_path.is_absolute():
@@ -39,7 +39,9 @@ class BridgeState:
                     self.process.kill()
                     self.process.wait(timeout=2)
 
-            cmd = [mgba_bin, "-g", str(rom_path)]
+            cmd = [mgba_bin, str(rom_path)]
+            if debug:
+                cmd.insert(1, "-g")
             self.process = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             return {"ok": True, "pid": self.process.pid, "cmd": cmd}
 
@@ -97,7 +99,8 @@ def make_handler(state: BridgeState):
                 if not rom:
                     raise ValueError("Missing 'rom' in request body")
 
-                result = state.launch(rom)
+                debug = bool(data.get("debug", True))
+                result = state.launch(rom, debug=debug)
                 self._send_json(200, result)
             except FileNotFoundError as exc:
                 self._send_json(400, {"ok": False, "error": str(exc)})
