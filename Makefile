@@ -124,7 +124,7 @@ compile-base: check-container-runtime $(BASE_STAMP) ## Compile game in ./source 
 		rm -f $(BASE_STAMP); \
 		$(MAKE) $(BASE_STAMP); \
 	fi
-	@RUN_CMD='$(CMD)'; \
+	@RUN_CMD=$$(printf '%s' "$(CMD)"); \
 	if [ "$(AUTO_CLEAN_MAKE)" != "0" ]; then \
 		case "$$RUN_CMD" in \
 			make*) \
@@ -150,7 +150,7 @@ compile-dusk: check-container-runtime $(DUSK_STAMP) ## Compile game in ./source 
 		rm -f $(DUSK_STAMP); \
 		$(MAKE) $(DUSK_STAMP); \
 	fi
-	@RUN_CMD='$(CMD)'; \
+	@RUN_CMD=$$(printf '%s' "$(CMD)"); \
 	if [ "$(AUTO_CLEAN_MAKE)" != "0" ]; then \
 		case "$$RUN_CMD" in \
 			make*) \
@@ -176,7 +176,7 @@ compile-butano: check-container-runtime $(BUTANO_STAMP) ## Compile game in ./sou
 		rm -f $(BUTANO_STAMP); \
 		$(MAKE) $(BUTANO_STAMP); \
 	fi
-	@RUN_CMD='$(CMD)'; \
+	@RUN_CMD=$$(printf '%s' "$(CMD)"); \
 	if [ "$(AUTO_CLEAN_MAKE)" != "0" ]; then \
 		case "$$RUN_CMD" in \
 			make*) \
