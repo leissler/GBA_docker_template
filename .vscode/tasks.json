@@ -10,8 +10,7 @@
         "bash scripts/build_and_copy_rom.sh debug"
       ],
       "group": {
-        "kind": "build",
-        "isDefault": true
+        "kind": "build"
       },
       "problemMatcher": [
         "$gcc"
@@ -25,6 +24,36 @@
         "-lc",
         "bash scripts/build_and_copy_rom.sh release"
       ],
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Build ROM (host via Docker, release)",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "make compile-butano CMD='make -j4'"
+      ],
+      "group": {
+        "kind": "build"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Build ROM (host via Docker, debug)",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "make compile-butano CMD='make -j4 USERFLAGS=\"-Og -g3\" USERCXXFLAGS=\"-Og -g3\"'"
+      ],
+      "group": {
+        "kind": "build"
+      },
       "problemMatcher": [
         "$gcc"
       ]

@@ -91,6 +91,7 @@ This repo includes VS Code tasks and launch configuration for GDB attach debuggi
 
 - Build task: `Build ROM (debug)` (`.vscode/tasks.json`)
 - Build helper script: `scripts/build_and_copy_rom.sh` (stale-dep detection + root ROM copy)
+- Host build tasks: `Build ROM (host via Docker, release|debug)` (`.vscode/tasks.json`)
 - Host launcher task: `Launch mGBA on host (bridge)` (`.vscode/tasks.json`)
 - Debug config: `Attach to mGBA GDB stub (host:2345)` (`.vscode/launch.json`)
 - Host bridge script: `scripts/mgba_host_bridge.py`
