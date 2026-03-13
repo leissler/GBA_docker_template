@@ -30,14 +30,12 @@ make compile-butano CMD=make
 
 ### 3. ROM output
 
-- Main build output: `source/source.gba`
-- Convenience copy in repo root: `./<repo-folder-name>.gba`
+- Use this ROM in your emulator: `./<repo-folder-name>.gba`
 
 ### 4. Clean all generated files
 
 ```sh
-bash scripts/clean_all_outputs.sh host-docker
-make clean-docker-stamps
+make clean
 ```
 
 ## Path B: Developers (VS Code + Dev Container)

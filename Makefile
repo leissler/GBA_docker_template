@@ -1,6 +1,7 @@
 .PHONY: help default \
         docker-build-base docker-build-dusk docker-build-butano \
         compile-base compile-dusk compile-butano \
+        clean clean-all \
         check-container-runtime \
         clean-docker-stamps
 
@@ -203,3 +204,8 @@ compile-butano: check-container-runtime $(BUTANO_STAMP) ## Compile game in ./sou
 
 clean-docker-stamps: ## Remove local docker stamp files
 	rm -rf $(STAMP_DIR)
+
+clean: ## Remove generated ROM/build outputs
+	bash scripts/clean_all_outputs.sh local
+
+clean-all: clean clean-docker-stamps ## Remove generated outputs and docker stamp files
