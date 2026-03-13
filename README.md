@@ -79,6 +79,12 @@ You can force a runtime explicitly:
 make CONTAINER_RUNTIME=podman compile-base CMD="make"
 ```
 
+Compile targets also support `AUTO_CLEAN_MAKE`:
+
+- `AUTO_CLEAN_MAKE=auto` (default): clean only when stale dependency paths are detected
+- `AUTO_CLEAN_MAKE=1`: always run `make clean` before `make*` commands
+- `AUTO_CLEAN_MAKE=0`: never auto-clean
+
 ## Debugging with mGBA (Host + Dev Container)
 
 This repo includes VS Code tasks and launch configuration for GDB attach debugging with host mGBA auto-launch:
