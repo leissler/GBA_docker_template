@@ -103,9 +103,9 @@ Examples:
 - WSL2 + Windows mGBA install: `GBA_EMULATOR_BIN=/mnt/c/Program Files/mGBA/mGBA.exe`
 - VisualBoyAdvance-M: set `GBA_EMULATOR=visualboyadvance-m`
 
-Notes:
-- `Run ROM on host emulator (no debugger)` works with supported emulators.
-- GDB attach debugging (`F5`) requires `mGBA`.
+Compatibility:
+- `Run -> Run Without Debugging` uses launch config `Run ROM on host emulator (no debugger)`. It works with any supported emulator (for example `mGBA` or `visualboyadvance-m`).
+- `Run -> Start Debugging` uses launch config `Attach to mGBA GDB stub (host:2345)`. This requires `mGBA` because GDB attach depends on the mGBA debug stub.
 
 If host bridge is not reachable, run on host:
 
