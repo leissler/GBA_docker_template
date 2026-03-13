@@ -7,7 +7,7 @@
       "command": "bash",
       "args": [
         "-lc",
-        "bash scripts/build_and_copy_rom.sh debug"
+        "bash scripts/vscode_build.sh debug"
       ],
       "group": {
         "kind": "build"
@@ -22,7 +22,7 @@
       "command": "bash",
       "args": [
         "-lc",
-        "bash scripts/build_and_copy_rom.sh release"
+        "bash scripts/vscode_build.sh release"
       ],
       "group": {
         "kind": "build"
@@ -32,72 +32,22 @@
       ]
     },
     {
-      "label": "Build ROM (host via Docker, release)",
-      "type": "process",
-      "command": "make",
-      "args": [
-        "AUTO_CLEAN_MAKE=0",
-        "compile-butano",
-        "CMD=make -j4 BUILD=build_host_release"
-      ],
-      "group": {
-        "kind": "build"
-      },
-      "problemMatcher": [
-        "$gcc"
-      ]
-    },
-    {
-      "label": "Build ROM (host via Docker, debug)",
-      "type": "process",
-      "command": "make",
-      "args": [
-        "AUTO_CLEAN_MAKE=0",
-        "compile-butano",
-        "CMD=make -j4 BUILD=build_host_debug USERFLAGS='-Og -g3' USERCXXFLAGS='-Og -g3'"
-      ],
-      "group": {
-        "kind": "build"
-      },
-      "problemMatcher": [
-        "$gcc"
-      ]
-    },
-    {
-      "label": "Clean All Outputs (devcontainer/local)",
+      "label": "Clean Outputs",
       "type": "shell",
       "command": "bash",
       "args": [
         "-lc",
-        "bash scripts/clean_all_outputs.sh local"
+        "bash scripts/vscode_clean.sh outputs"
       ],
       "problemMatcher": []
     },
     {
-      "label": "Clean All Outputs (host via Docker)",
+      "label": "Clean Everything (including Docker stamps)",
       "type": "shell",
       "command": "bash",
       "args": [
         "-lc",
-        "bash scripts/clean_all_outputs.sh host-docker"
-      ],
-      "problemMatcher": []
-    },
-    {
-      "label": "Clean Docker Stamps",
-      "type": "process",
-      "command": "make",
-      "args": [
-        "clean-docker-stamps"
-      ],
-      "problemMatcher": []
-    },
-    {
-      "label": "Clean Everything (host via Docker + stamps)",
-      "dependsOrder": "sequence",
-      "dependsOn": [
-        "Clean All Outputs (host via Docker)",
-        "Clean Docker Stamps"
+        "bash scripts/vscode_clean.sh all"
       ],
       "problemMatcher": []
     },
@@ -109,7 +59,8 @@
         "-lc",
         "bash scripts/launch_mgba_via_bridge.sh"
       ],
-      "problemMatcher": []
+      "problemMatcher": [],
+      "hide": true
     },
     {
       "label": "Prepare Debug Session (build + launch host emulator)",
@@ -118,7 +69,8 @@
         "Build ROM (debug)",
         "Launch host emulator (bridge)"
       ],
-      "problemMatcher": []
+      "problemMatcher": [],
+      "hide": true
     }
   ]
 }

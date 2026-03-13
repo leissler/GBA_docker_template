@@ -52,12 +52,13 @@ Use `Tasks: Run Build Task`:
 - `Build ROM (debug)`
 - `Build ROM (release)`
 
+These tasks auto-detect whether VS Code runs on host or inside the Dev Container.
+
 ### 3. Clean in VS Code
 
 Use `Tasks: Run Task`:
-- `Clean All Outputs (devcontainer/local)`
-- `Clean All Outputs (host via Docker)`
-- `Clean Everything (host via Docker + stamps)`
+- `Clean Outputs`
+- `Clean Everything (including Docker stamps)`
 
 ### 4. Debug on host mGBA
 
