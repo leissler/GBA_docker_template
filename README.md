@@ -154,7 +154,7 @@ Get-Content "$env:TEMP\mgba-host-bridge.log"
   `build_dev_*` for devcontainer tasks, `build_host_*` for host-via-Docker tasks.
 - Native Windows users with local Docker Desktop do not need any extra mount configuration.
 
-## Remote Docker Daemon (Windows VM -> Mac host) 
+## Advanced (Rare): Remote Docker Daemon (Windows VM -> Mac host)
 
 If Docker runs on a remote daemon (for example Mac host), bind mounts must use
 paths that exist on the daemon host.
