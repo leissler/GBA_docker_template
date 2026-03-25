@@ -132,6 +132,39 @@ function Resolve-ProjectName {
   return [System.IO.Path]::GetFileName($WorkspaceRoot)
 }
 
+function Try-FetchRomFromMountedSource {
+  param(
+    [string]$RuntimeExe,
+    [string]$ImageName,
+    [string]$MountSource,
+    [string]$RomOutPath
+  )
+
+  $fetchCmd = "if [ -f /source/source.gba ]; then base64 /source/source.gba; else exit 66; fi"
+  $b64Lines = @()
+  try {
+    $b64Lines = & $RuntimeExe run --rm -v "${MountSource}:/source:ro" $ImageName -l -c $fetchCmd 2>$null
+    if ($LASTEXITCODE -ne 0) {
+      return $false
+    }
+  } catch {
+    return $false
+  }
+
+  $b64 = ($b64Lines | Out-String)
+  if (-not $b64.Trim()) {
+    return $false
+  }
+
+  try {
+    $bytes = [Convert]::FromBase64String($b64)
+    [System.IO.File]::WriteAllBytes($RomOutPath, $bytes)
+    return $true
+  } catch {
+    return $false
+  }
+}
+
 $runtime = Resolve-ContainerRuntime
 if (-not $runtime) {
   throw "No supported container runtime found. Install Docker Desktop or Podman."
@@ -168,5 +201,13 @@ if (-not (Test-Path $romInSource)) {
 
 $projectName = Resolve-ProjectName
 $romOut = Join-Path $WorkspaceRoot ("{0}.gba" -f $projectName)
+
+if (-not (Test-Path $romInSource)) {
+  $fetched = Try-FetchRomFromMountedSource -RuntimeExe $runtime -ImageName $ButanoImage -MountSource $SourceDirMount -RomOutPath $romInSource
+  if (-not $fetched) {
+    throw "Build succeeded but source/source.gba was not found and could not be fetched from mounted source path. Verify GBA_SOURCE_DIR_MOUNT."
+  }
+}
+
 Copy-Item -Force $romInSource $romOut
 Write-Output ("Created ./{0}.gba" -f $projectName)
