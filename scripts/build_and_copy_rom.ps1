@@ -140,28 +140,35 @@ function Try-FetchRomFromMountedSource {
     [string]$RomOutPath
   )
 
-  $fetchCmd = "if [ -f /source/source.gba ]; then base64 /source/source.gba; else exit 66; fi"
-  $b64Lines = @()
+  $containerId = ""
   try {
-    $b64Lines = & $RuntimeExe run --rm -v "${MountSource}:/source:ro" $ImageName -l -c $fetchCmd 2>$null
+    $containerId = (& $RuntimeExe create -v "${MountSource}:/source:ro" $ImageName -c "sleep 300" 2>$null | Out-String).Trim()
+    if (-not $containerId) {
+      return $false
+    }
+
+    & $RuntimeExe start $containerId 1>$null 2>$null
     if ($LASTEXITCODE -ne 0) {
       return $false
     }
-  } catch {
-    return $false
-  }
 
-  $b64 = ($b64Lines | Out-String)
-  if (-not $b64.Trim()) {
-    return $false
-  }
+    & $RuntimeExe exec $containerId test -f /source/source.gba 1>$null 2>$null
+    if ($LASTEXITCODE -ne 0) {
+      return $false
+    }
 
-  try {
-    $bytes = [Convert]::FromBase64String($b64)
-    [System.IO.File]::WriteAllBytes($RomOutPath, $bytes)
+    & $RuntimeExe cp "${containerId}:/source/source.gba" $RomOutPath 1>$null 2>$null
+    if ($LASTEXITCODE -ne 0) {
+      return $false
+    }
+
     return $true
   } catch {
     return $false
+  } finally {
+    if ($containerId) {
+      & $RuntimeExe rm -f $containerId 1>$null 2>$null
+    }
   }
 }
 
