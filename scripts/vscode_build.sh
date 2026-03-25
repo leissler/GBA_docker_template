@@ -22,10 +22,16 @@ if in_container; then
   exit 0
 fi
 
+MAKE_ARGS=(AUTO_CLEAN_MAKE=0 compile-butano)
+if [[ -n "${GBA_SOURCE_DIR_MOUNT:-}" ]]; then
+  MAKE_ARGS+=("SOURCE_DIR_MOUNT=${GBA_SOURCE_DIR_MOUNT}")
+fi
+
 if [[ "${MODE}" == "debug" ]]; then
   CMD="make -j4 BUILD=build_host_debug USERFLAGS='-Og -g3' USERCXXFLAGS='-Og -g3'"
 else
   CMD="make -j4 BUILD=build_host_release"
 fi
 
-make AUTO_CLEAN_MAKE=0 compile-butano "CMD=${CMD}"
+MAKE_ARGS+=("CMD=${CMD}")
+make "${MAKE_ARGS[@]}"

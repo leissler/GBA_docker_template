@@ -7,6 +7,7 @@
 
 PROJECT_NAME := $(notdir $(CURDIR))
 SOURCE_DIR := $(abspath ./source)
+SOURCE_DIR_MOUNT ?= $(SOURCE_DIR)
 STAMP_DIR := .docker-stamps
 
 BASE_IMAGE := dkarm_base:local
@@ -31,6 +32,9 @@ default: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
 	awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@echo ""
+	@echo "Variables:"
+	@echo "  SOURCE_DIR_MOUNT=<path-on-daemon>  Override mounted source path for remote Docker daemons"
 
 $(STAMP_DIR):
 	mkdir -p $(STAMP_DIR)
@@ -144,7 +148,21 @@ compile-base: check-container-runtime $(BASE_STAMP) ## Compile game in ./source 
 				fi ;; \
 		esac; \
 	fi; \
-	$(CONTAINER_RUNTIME) run -it --rm -v "$(SOURCE_DIR):/source" $(BASE_IMAGE) -l -c "$$RUN_CMD"
+	MOUNT_SOURCE="$(SOURCE_DIR_MOUNT)"; \
+	if [ "$(CONTAINER_RUNTIME)" = "docker" ]; then \
+		DAEMON_HOST="$$($(CONTAINER_RUNTIME) context inspect --format '{{ (index .Endpoints "docker").Host }}' 2>/dev/null || true)"; \
+		case "$$DAEMON_HOST" in \
+			""|unix://*|npipe://*) ;; \
+			*) \
+				if [ "$$MOUNT_SOURCE" = "$(SOURCE_DIR)" ]; then \
+					echo "Detected remote Docker daemon: $$DAEMON_HOST"; \
+					echo "Bind mount source must be a path on the daemon host."; \
+					echo "Retry with SOURCE_DIR_MOUNT=<daemon-host-absolute-path-to-source>."; \
+					exit 1; \
+				fi ;; \
+		esac; \
+	fi; \
+	$(CONTAINER_RUNTIME) run -it --rm -v "$$MOUNT_SOURCE:/source" $(BASE_IMAGE) -l -c "$$RUN_CMD"
 
 compile-dusk: check-container-runtime $(DUSK_STAMP) ## Compile game in ./source with CMD on dusk docker image
 	@if ! $(CONTAINER_RUNTIME) image inspect $(DUSK_IMAGE) > /dev/null 2>&1; then \
@@ -170,7 +188,21 @@ compile-dusk: check-container-runtime $(DUSK_STAMP) ## Compile game in ./source 
 				fi ;; \
 		esac; \
 	fi; \
-	$(CONTAINER_RUNTIME) run -it --rm -v "$(SOURCE_DIR):/source" $(DUSK_IMAGE) -l -c "$$RUN_CMD"
+	MOUNT_SOURCE="$(SOURCE_DIR_MOUNT)"; \
+	if [ "$(CONTAINER_RUNTIME)" = "docker" ]; then \
+		DAEMON_HOST="$$($(CONTAINER_RUNTIME) context inspect --format '{{ (index .Endpoints "docker").Host }}' 2>/dev/null || true)"; \
+		case "$$DAEMON_HOST" in \
+			""|unix://*|npipe://*) ;; \
+			*) \
+				if [ "$$MOUNT_SOURCE" = "$(SOURCE_DIR)" ]; then \
+					echo "Detected remote Docker daemon: $$DAEMON_HOST"; \
+					echo "Bind mount source must be a path on the daemon host."; \
+					echo "Retry with SOURCE_DIR_MOUNT=<daemon-host-absolute-path-to-source>."; \
+					exit 1; \
+				fi ;; \
+		esac; \
+	fi; \
+	$(CONTAINER_RUNTIME) run -it --rm -v "$$MOUNT_SOURCE:/source" $(DUSK_IMAGE) -l -c "$$RUN_CMD"
 
 compile-butano: check-container-runtime $(BUTANO_STAMP) ## Compile game in ./source with CMD on butano docker image
 	@if ! $(CONTAINER_RUNTIME) image inspect $(BUTANO_IMAGE) > /dev/null 2>&1; then \
@@ -196,7 +228,21 @@ compile-butano: check-container-runtime $(BUTANO_STAMP) ## Compile game in ./sou
 				fi ;; \
 		esac; \
 	fi; \
-	$(CONTAINER_RUNTIME) run -it --rm -v "$(SOURCE_DIR):/source" $(BUTANO_IMAGE) -l -c "$$RUN_CMD"
+	MOUNT_SOURCE="$(SOURCE_DIR_MOUNT)"; \
+	if [ "$(CONTAINER_RUNTIME)" = "docker" ]; then \
+		DAEMON_HOST="$$($(CONTAINER_RUNTIME) context inspect --format '{{ (index .Endpoints "docker").Host }}' 2>/dev/null || true)"; \
+		case "$$DAEMON_HOST" in \
+			""|unix://*|npipe://*) ;; \
+			*) \
+				if [ "$$MOUNT_SOURCE" = "$(SOURCE_DIR)" ]; then \
+					echo "Detected remote Docker daemon: $$DAEMON_HOST"; \
+					echo "Bind mount source must be a path on the daemon host."; \
+					echo "Retry with SOURCE_DIR_MOUNT=<daemon-host-absolute-path-to-source>."; \
+					exit 1; \
+				fi ;; \
+		esac; \
+	fi; \
+	$(CONTAINER_RUNTIME) run -it --rm -v "$$MOUNT_SOURCE:/source" $(BUTANO_IMAGE) -l -c "$$RUN_CMD"
 	@if [ -f "$(SOURCE_DIR)/source.gba" ]; then \
 		cp "$(SOURCE_DIR)/source.gba" "./$(PROJECT_NAME).gba"; \
 		echo "Created ./$(PROJECT_NAME).gba"; \

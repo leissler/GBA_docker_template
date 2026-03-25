@@ -26,7 +26,10 @@
       "name": "Run ROM on host emulator (no debugger)",
       "type": "node-terminal",
       "request": "launch",
-      "command": "bash -lc 'bash scripts/build_and_copy_rom.sh release && GBA_DEBUG=0 bash scripts/launch_mgba_via_bridge.sh'"
+      "command": "bash -lc 'bash scripts/build_and_copy_rom.sh release && GBA_DEBUG=0 bash scripts/launch_mgba_via_bridge.sh'",
+      "windows": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& '${workspaceFolder}\\scripts\\build_and_copy_rom.ps1' -Mode release; $env:GBA_DEBUG='0'; & '${workspaceFolder}\\scripts\\launch_mgba_via_bridge.ps1'\""
+      }
     }
   ]
 }

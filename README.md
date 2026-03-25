@@ -9,7 +9,7 @@ Two ways to use this repo:
 ## Prerequisites
 
 - Docker Desktop (or Podman)
-- `make`
+- `make` (for `make ...` command path)
 - `git`
 
 Run all commands from the repository root.
@@ -49,6 +49,12 @@ wsl -l -v
 make compile-butano CMD=make
 ```
 
+Windows PowerShell alternative (no Git Bash / no make):
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build_and_copy_rom.ps1 -Mode release
+```
+
 ### 3. ROM output
 
 - Use this ROM in your emulator: `./<repo-folder-name>.gba`
@@ -57,6 +63,12 @@ make compile-butano CMD=make
 
 ```sh
 make clean
+```
+
+Windows PowerShell alternative:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/clean_all_outputs.ps1 -Mode host-docker
 ```
 
 ## Path B: Developers (VS Code + Dev Container)
@@ -74,6 +86,7 @@ Use `Tasks: Run Build Task`:
 - `Build ROM (release)`
 
 These tasks auto-detect whether VS Code runs on host or inside the Dev Container.
+On Windows host they now use native PowerShell scripts (no Bash requirement).
 
 ### 3. Clean in VS Code
 
@@ -127,9 +140,40 @@ Bridge log (host):
 cat /tmp/mgba-host-bridge.log
 ```
 
+Windows bridge log path:
+
+```powershell
+Get-Content "$env:TEMP\mgba-host-bridge.log"
+```
+
 ## Notes
 
 - Docker Desktop auto-start is supported on macOS and on WSL2 Ubuntu.
 - Host emulator auto-discovery supports macOS, Linux, Windows, and WSL2 paths.
 - Build directories are separated to avoid stale dependency conflicts:
   `build_dev_*` for devcontainer tasks, `build_host_*` for host-via-Docker tasks.
+- Native Windows users with local Docker Desktop do not need any extra mount configuration.
+
+## Remote Docker Daemon (Windows VM -> Mac host) 
+
+If Docker runs on a remote daemon (for example Mac host), bind mounts must use
+paths that exist on the daemon host.
+
+This template supports that with:
+- `SOURCE_DIR_MOUNT` (Makefile variable)
+- `GBA_SOURCE_DIR_MOUNT` (helper-script env var used by VS Code tasks/scripts)
+
+Examples:
+
+```sh
+make compile-butano CMD=make SOURCE_DIR_MOUNT=/Users/<you>/Development/RetroConsoles/GBA/GBA_docker_template/source
+```
+
+```sh
+GBA_SOURCE_DIR_MOUNT=/Users/<you>/Development/RetroConsoles/GBA/GBA_docker_template/source \
+bash scripts/vscode_build.sh release
+```
+
+Behavior:
+- Local Docker daemon (`unix://` or `npipe://`): default `SOURCE_DIR_MOUNT=$(abspath ./source)` works unchanged.
+- Remote Docker daemon (`ssh://`/`tcp://`): if `SOURCE_DIR_MOUNT` is not set, build fails with a clear guidance message.
