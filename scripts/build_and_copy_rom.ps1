@@ -195,10 +195,6 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $romInSource = Join-Path $SourceDir "source.gba"
-if (-not (Test-Path $romInSource)) {
-  throw "Build succeeded but source/source.gba was not found. If using remote daemon mounts, verify GBA_SOURCE_DIR_MOUNT maps to this workspace."
-}
-
 $projectName = Resolve-ProjectName
 $romOut = Join-Path $WorkspaceRoot ("{0}.gba" -f $projectName)
 
