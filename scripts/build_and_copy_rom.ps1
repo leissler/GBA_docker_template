@@ -92,8 +92,15 @@ function Ensure-Image {
     [string]$DockerfilePath
   )
 
-  & $RuntimeExe image inspect $ImageName *> $null
-  if ($LASTEXITCODE -eq 0) {
+  $exists = $false
+  try {
+    & $RuntimeExe image inspect $ImageName 1>$null 2>$null
+    $exists = ($LASTEXITCODE -eq 0)
+  } catch {
+    $exists = $false
+  }
+
+  if ($exists) {
     return
   }
 
