@@ -59,7 +59,36 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build_and_copy_rom.p
 
 - Use this ROM in your emulator: `./<repo-folder-name>.gba`
 
-### 4. Clean all generated files
+### 4. Run ROM in emulator
+
+macOS/Linux:
+
+```sh
+make run
+make run-debug
+```
+
+Without rebuild:
+
+```sh
+make run-no-build
+make run-debug-no-build
+```
+
+Windows PowerShell alternative (no Git Bash / no make):
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run_and_launch_rom.ps1 -Mode release
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run_and_launch_rom.ps1 -Mode debug
+```
+
+Without rebuild:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run_and_launch_rom.ps1 -Mode release -NoBuild
+```
+
+### 5. Clean all generated files
 
 ```sh
 make clean

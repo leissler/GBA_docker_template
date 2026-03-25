@@ -1,6 +1,7 @@
 .PHONY: help default \
         docker-build-base docker-build-dusk docker-build-butano \
         compile-base compile-dusk compile-butano \
+        run run-debug run-no-build run-debug-no-build \
         clean clean-all \
         check-container-runtime \
         clean-docker-stamps
@@ -247,6 +248,18 @@ compile-butano: check-container-runtime $(BUTANO_STAMP) ## Compile game in ./sou
 		cp "$(SOURCE_DIR)/source.gba" "./$(PROJECT_NAME).gba"; \
 		echo "Created ./$(PROJECT_NAME).gba"; \
 	fi
+
+run: ## Build release ROM and launch host emulator
+	bash scripts/run_and_launch_rom.sh release
+
+run-debug: ## Build debug ROM and launch host emulator
+	bash scripts/run_and_launch_rom.sh debug
+
+run-no-build: ## Launch release ROM without rebuilding
+	bash scripts/run_and_launch_rom.sh release --no-build
+
+run-debug-no-build: ## Launch debug ROM without rebuilding
+	bash scripts/run_and_launch_rom.sh debug --no-build
 
 clean-docker-stamps: ## Remove local docker stamp files
 	rm -rf $(STAMP_DIR)

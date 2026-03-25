@@ -15,6 +15,11 @@ if [[ -n "${BRIDGE_HOST_OVERRIDE}" ]]; then
 fi
 
 BRIDGE_HOST_CANDIDATES+=(
+  127.0.0.1
+  localhost
+)
+
+BRIDGE_HOST_CANDIDATES+=(
   host.docker.internal
   gateway.docker.internal
   host.containers.internal
